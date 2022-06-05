@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+    <div class="row text-center">
+        {% if weathers %}
+            {% for weather in weathers %}
+                <div class="col-lg-4">
+                    <img src="http://openweathermap.org/img/w/{{ weather.icon }}.png" alt="">
+                    <h2>{{ weather.city }}</h2>
+                    <p class="h4" style="color:orangered">{{ weather.temperature }}° C</p>
+                    <p class="h4" style="color:darkorchid">{{ weather.description }}</p>
+                    <p class="h4" style="color:black">{{ weather.time }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-lg-6 col-lg-offset-3">
+                <h2>The city doesn't exist, please input again.</h2>
+            </div>
+        {% endif %}
+    </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    {{ product.name }}
+{% endblock %}
+
+{% block content %}
+    <div class="product-detail">
+        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'image/no_image.png' %}{% endif %}" alt="">
+        <h1>{{ product.name }}</h1>
+        <h2><a href="{{ product.category.getAbsoluteUrl }}">{{ product.category }}</a></h2>
+        <p class="price">${{ product.price }}</p>
+        <form action="{% url 'cart:cartAdd' product.id %}" method="post">
+            {{ cartProductForm.as_table }}
+            {% csrf_token %}
+            <input type="submit" value="Add to cart">
+        </form>
+        {{ product.description|linebreaks }}
+    </div>
+{% endblock %}

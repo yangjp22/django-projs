@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Your shopping cart
+{% endblock %}
+
+{% block content %}
+    <h1>Your shopping cart</h1>
+    <table class="cart">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Remove</th>
+                <th>Unit price</th>
+                <th>Total price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart %}
+                {% with product=item.product %}
+                <tr>
+                    <td>
+                        <a href="{{ product.getAbsoluteUrl }}">
+                            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'image/no_image.png' %}{% endif %}" alt="">
+                        </a>
+                    </td>
+                    <td>{{ product.name }}</td>
+                    <td>
+                        <form action="{% url 'cart:cartAdd' product.id %}" method="post">
+                            {% csrf_token %}
+                            {{ item.upDateQuantityForm.quantity }}
+                            {{ item.upDateQuantityForm.update }}
+                            <input type="submit" value="Update">
+                        </form>
+                    </td>
+                    <td><a href="{% url 'cart:cartRemove' product.id %}">Remove</a></td>
+                    <td class="sum">${{ item.price }}</td>
+                    <td class="sum">${{ item.totalPrice }}</td>
+                </tr>
+                {% endwith %}
+            {% endfor %}
+
+                <tr class="total">
+                    <td>total</td>
+                    <td colspan="4"></td>
+                    <td class="sum">${{ cart.getTotalPrice }}</td>
+                </tr>
+        </tbody>
+    </table>
+    <p class="text-right">
+        <a href="{% url 'shop:productList' %}" class="button light">Continue shopping</a>
+        <a href="{% url 'orders:orderCreate' %}" class="button">Check out</a>
+    </p>
+{% endblock %}

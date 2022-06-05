@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}My shop{% endblock %}</title>
+    <link rel="stylesheet" href = "{% static 'css/base.css' %}">
+    <script>
+        {% block domready %}
+        {% endblock %}
+    </script>
+</head>
+<body>
+    <div id="header">
+        <a href="{% url 'shop:productList' %}" class="'logo button">Home</a>
+        <a href="{% url 'cart:cartDetail' %}" class="'logo button">Cart</a>
+    </div>
+    <div id="subheader">
+        <div class="cart">
+            {% with totalItems=cart|length %}
+                {% if cart|length > 0 %}
+                    Your cart:
+                    <a href="{% url 'cart:cartDetail' %}">{{ totalItems }} item{{ totalItems|pluralize }}, ${{ cart.getTotalPrice }}</a>
+                {% else %}
+                    Your cart is empty.
+                {% endif %}
+{#                <a href="" class="logo">Cart</a>#}
+            {% endwith %}
+        </div>
+    </div>
+    <div id="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

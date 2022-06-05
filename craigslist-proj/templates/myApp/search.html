@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load filters %}
+{% load static %}
+{% block content %}
+    <h2 style="text-align: center; font-size: 20px;">{{ search | title }}</h2>
+
+    <div class="row">
+        {% for post in finalList %}
+                <div class="col s4">
+                    <div class="card">
+                        <div class="card-image">
+                            <a href="{{ post.link }}">
+                                {% if forloop.counter|Mod == 1 %}
+                                    <img src="{% static 'one.jfif' %}" alt="" height="203.94px">
+                                {% elif forloop.counter|Mod == 2 %}
+                                    <img src="{% static 'two.jfif' %}" alt="">
+                                {% else %}
+                                    <img src="{% static 'three.jfif' %}" alt="">
+                                {% endif %}
+                            </a>
+                        </div>
+                        <div class="card-content">
+                            <p style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"><a href="{{ post.link }}">{{ post.title }}</a></p>
+                        </div>
+                        <div class="card-action">
+                            <p style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ post.time|time_filter }} -- <a href="{{ post.link }}" title="{{ post.location }}">{{ post.location }}</a></p>
+                        </div>
+                    </div>
+                </div>
+        {% empty %}
+            <h2 style="text-align: center; font-size: 20px;">Doesn't exist, input another.</h2>
+        {% endfor %}
+    </div>
+
+{% endblock %}

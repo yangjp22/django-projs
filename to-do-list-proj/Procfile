@@ -1,0 +1,1 @@
+web: gunicorn mySchedule.wsgi

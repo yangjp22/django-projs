@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container" style="margin-top:30px;">
+    <div class="row">
+        <div class="col-lg-4"></div>
+      <div class="col-lg-4">
+        <h3 class="text-center">Customize Schedule</h3>
+        <form class="form-inline justify-content-center" action="{% url 'app_item:listItem' %}" method='post'>
+            {% csrf_token %}
+            <div class="form-group-lg">
+                <input type="text" class="form-control  mb-2 input-lg" placeholder="adding here..." name='item'>
+                <button type="submit" class="btn btn-primary mb-2">Submit</button>
+            </div>
+        </form>
+      </div> 
+    </div>
+
+    <div class='row'>
+        <div class="col-md-2"></div>
+        <div class='col-md-8'>
+        <table class="table table-hover">
+            <tbody>
+                {% for todo in toDolist %}
+                <tr>
+                    <td>
+                        {{ todo.text }}
+                        <div class='float-right'>
+                          <form method='post' action='{% url "app_item:delete" todo.id %}'>
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger sm">Delete</button>
+                          </form>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+{#        <ul class="list-group">#}
+{##}
+{#              <li class="list-group-item vertical-center">{{ todo.text }}#}
+{#            <div class='float-right'>#}
+{#              <form method='post' action='{% url "app_item:delete" todo.id %}'>#}
+{#                {% csrf_token %}#}
+{#                <button type="submit" class="btn btn-danger sm">Delete</button>#}
+{#              </form>#}
+{#            </div>#}
+{#          </li>#}
+{##}
+{#        </ul>#}
+      </div>
+    </div>
+
+  </div>
+{% endblock content %}

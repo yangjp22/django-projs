@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ image.title }}
+{% endblock %}
+
+{% block domready %}
+    $('a.like').click(function(e){
+        e.preventDefault();
+        $.post(
+             "{% url 'image:like' %}",
+             {id: $(this).attr('id'), action: $(this).attr('action')},
+             function(data){
+                if (data['status'] === 'ok'){
+                    let previousAction = $('a.like').attr('action');
+                    $('a.like').attr('action', previousAction==='like'? 'unlike':'like');
+                    $('a.like').text(previousAction==='like'?'unlike':'like');
+                    let previousLikes = parseInt($('span.total').text());
+                    $('span.total').text(previousAction==='like'?(previousLikes + 1):(previousLikes - 1));
+                    let currentLikes = parseInt($('span.total').text());
+                    if (currentLikes > 0){
+                        $('.empty').hide();
+                        $('.having').show();
+                    } else {
+                        $('.empty').show();
+                        $('.having').hide();
+                    }
+                }
+             }
+        );
+    });
+{% endblock %}
+
+
+{% block content %}
+    <h1>{{ image.title }}</h1>
+    {% load thumbnail %}
+    {% thumbnail image.image "300" as im %}
+     <a href="{{ image.image.url }}">
+    <img src="{{ im.url }}" alt="" class="image-detail">
+    </a>
+    {% endthumbnail %}
+    {% with totalLikes=image.usersLike.count usersLike=image.usersLike.all %}
+        <div class="class-info">
+            <div>
+                <span class="count">
+                    <span class="total">{{ totalLikes }}</span>
+                    like{{ totalLikes|pluralize }}
+                </span>
+                <a href="#" id="{{ image.id }}" action="{% if request.user in usersLike %}un{% endif %}like" class="like button">
+                    {% if request.user not in usersLike %}
+                        Like
+                    {% else %}
+                        Unlike
+                    {% endif %}
+                </a>
+            </div>
+            {{ image.description|linebreaks }}
+        </div>
+        <div class="image-likes">
+            {% for user in image.usersLike.all %}
+                <div class="having">
+                    <a href="{% url 'userDetail' user.username %}">
+                        <img src="{{ user.profile.photo.url }}" alt="" style="width:50px;height:50px;">
+                        <p>{{ user.username }}</p>
+                    </a>
+
+                </div>
+            {% empty %}
+                <span class="empty">Nobody likes this image yet.</span>
+            {% endfor %}
+        </div>
+    {% endwith %}
+{% endblock %}

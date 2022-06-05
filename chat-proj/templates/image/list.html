@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Images bookmarked
+{% endblock %}
+
+{% block domready %}
+    let page=1;
+    let emptyPage=false;
+    let blockRequest = false;
+    $(window).scroll(function(){
+        let margin=$(document).height() - $(window).height() - 200;
+        if ($(window).scrollTop() > margin && emptyPage === false && blockRequest === false){
+            blockRequest = true;
+            page += 1;
+            $.get("?page=" + page, function(data){
+                if (data===''){
+                    emptyPage=true;
+                }else{
+                    blockRequest = false;
+                    $('#image-list').append(data);
+                }
+            });
+        }
+    });
+{% endblock %}
+
+{% block content %}
+    <h1>Image bookmarked</h1>
+    {% if images %}
+        <div id="image-list">
+            {% include 'image/listAjax.html' %}
+        </div>
+    {% else %}
+        <p>You have no images, go <a href="{% url 'image:create' %}">here</a> to create new images.</p>
+    {% endif %}
+{% endblock %}

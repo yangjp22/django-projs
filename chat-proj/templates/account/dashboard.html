@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block style %}
+    p{
+        font-size: 20px;
+    }
+{% endblock %}
+
+{% block content %}
+    <h1>Dashboard</h1>
+    {% with totalImagesCreated=request.user.imagesCreated.count %}
+        <p>Hello <span style="color:darkorchid;">{{ request.user.username }}</span>, welcome to your dashboard. You have bookmarked {{ totalImagesCreated }} image{{ totalImagesCreated|pluralize }}. <a href="{% url 'userDetail' request.user.username %}">Have a look</a></p>
+    {% endwith %}
+{#    <p>Drag the following button to your bookmarks toolbar to bookmark images from other websites <a href="javascript:{% include 'bookmarkletLauncher.js' %}">Bookmark it</a></p>#}
+    <p>Click the following button to your bookmarks toolbar to bookmark images from other websites. <a href="{% url 'image:create' %}">     Bookmark</a></p>
+    <p>You can also <a href="{% url 'edit' %}">edit your profile</a> or <a href="{% url 'passwordChange' %}">change your password</a>.</p>
+{% endblock %}

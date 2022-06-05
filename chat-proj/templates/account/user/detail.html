@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ user.get_full_name }}
+{% endblock %}
+
+{% block domready %}
+    $('a.follow').click(function(e){
+        e.preventDefault();
+        $.post("{% url 'Follow' %}",
+             {id: $(this).attr('id'), action: $(this).attr('action')},
+             function(data){
+                if (data['status'] === 'ok') {
+                    let previousAction = $('a.follow').attr('action');
+                    $('a.follow').attr('action', previousAction==='follow'?'unfollow':'follow');
+                    $('a.follow').text(previousAction==='follow'?'unfollow':'follow');
+                    let previousFollowers = parseInt($('span.total').text());
+                    $('span.total').text(previousAction==='follow'?(previousFollowers+1):(previousFollowers-1));
+                }
+            }
+        )
+    })
+{% endblock %}
+
+{% block content %}
+    <h1>{{ user.username }}</h1>
+    {% load thumbnail %}
+    <div class="profile-info">
+        {% thumbnail user.profile.photo '180x180' crop="100%" as im %}
+            <img src="{{ im.url }}" alt="" class="user-detail">
+        {% endthumbnail %}
+    </div>
+    {% with totalFollowers=user.followers.count %}
+        <span class="count">
+            <span class="total">{{ totalFollowers }}</span>
+            follower{{ totalFollowers|pluralize }}
+        </span>
+        <a href="#" id="{{ user.id }}" action="{% if request.user in user.followers.all %}un{% endif %}follow" class="follow button">
+            {% if request.user not in user.followers.all %}
+                Follow
+            {% else %}
+                Unfollow
+            {% endif %}
+        </a>
+        <div id="image-list" class="image-container">
+            {% include 'image/listAjax.html' with images=user.imagesCreated.all %}
+        </div>
+    {% endwith %}
+
+{% endblock %}

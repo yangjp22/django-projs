@@ -1,0 +1,29 @@
+{% load blogTags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static "css/blog.css" %}">
+</head>
+<body>
+    <div id="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <div id="sidebar">
+        <h2>Jinpeng's blog</h2>
+        <p>This is  Jinpeng's log. He has written {% myTag %} posts so far.</p>
+        <h3>Latest posts</h3>
+        {% showLatestPosts %}
+        <h3>Most commented posts</h3>
+        {% getMostCommentedPosts as mostCommentedPosts %}
+        <ul>
+            {% for post in mostCommentedPosts %}
+                <li><a href="{{ post.getAbsoluteUrl }}">{{ post.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
